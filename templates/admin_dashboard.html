@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* STAT CARDS */
+.stat-card {
+    padding: 22px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transition: 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-1 { background: linear-gradient(135deg, #007bff, #00a2ff); }
+.stat-2 { background: linear-gradient(135deg, #6f42c1, #b37bff); }
+.stat-3 { background: linear-gradient(135deg, #198754, #2ecc71); }
+
+/* QUICK ACTIONS */
+.quick-card {
+    padding: 16px;
+    border-radius: 14px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: 0.3s ease;
+}
+.quick-card:hover {
+    transform: translateY(-6px);
+}
+
+.quick-icon {
+    font-size: 40px;
+}
+
+/* TABLE */
+.table-box {
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    margin-top: 35px;
+}
+
+.table thead {
+    background: #343a40;
+    color: white;
+}
+
+.table tbody tr:hover {
+    background: #f7f7f7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+    animation: fadeIn 0.4s ease;
+}
+</style>
+
+<!-- TITLE -->
+<h2 class="dashboard-title">📊 Admin Dashboard</h2>
+
+<!-- TOP STATISTICS -->
+<div class="row text-center fade-in">
+
+    <div class="col-md-4 mb-4">
+        <div class="stat-card stat-1">
+            <h3>{{ total_students }}</h3>
+            <p class="mb-0">Total Students</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="stat-card stat-2">
+            <h3>{{ total_quizzes }}</h3>
+            <p class="mb-0">Total Quizzes</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="stat-card stat-3">
+            <h3>{{ materials|length }}</h3>
+            <p class="mb-0">Total Study Materials</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- QUICK ACTIONS -->
+<h3 class="mt-4 mb-3">⚡ Quick Actions</h3>
+
+<div class="row fade-in">
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ url_for('upload_material') }}" style="text-decoration:none; color:inherit;">
+            <div class="quick-card">
+                <div class="quick-icon">📚</div>
+                <h5 class="mt-2">Upload Material</h5>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ url_for('admin_quiz') }}" style="text-decoration:none; color:inherit;">
+            <div class="quick-card">
+                <div class="quick-icon">📝</div>
+                <h5 class="mt-2">Add Quiz</h5>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ url_for('admin_analytics') }}" style="text-decoration:none; color:inherit;">
+            <div class="quick-card">
+                <div class="quick-icon">📊</div>
+                <h5 class="mt-2">View Analytics</h5>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- RECENT MATERIALS TABLE -->
+<div class="table-box fade-in">
+    <h4 class="mb-3">📄 Recent Materials</h4>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Subject</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for m in materials %}
+            <tr>
+                <td>{{ m.title }}</td>
+                <td>{{ m.type }}</td>
+                <td>{{ m.subject }}</td>
+                <td>
+                    {% if m.type == 'pdf' %}
+                    <a href="{{ url_for('serve_pdf', filename=m.filename) }}" 
+                       class="btn btn-sm btn-info" target="_blank">View</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_material', mid=m.id) }}" 
+                       class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

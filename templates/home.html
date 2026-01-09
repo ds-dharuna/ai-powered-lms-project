@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* HERO SECTION */
+.hero {
+    padding: 80px 30px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    animation: fadeIn 0.5s ease;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.cta-btn {
+    margin-top: 25px;
+    padding: 14px 35px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+}
+
+/* FEATURES SECTION */
+.features {
+    margin-top: 50px;
+}
+
+.feature-card {
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(12px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+</style>
+
+<!-- HERO SECTION -->
+<div class="hero mb-5">
+    <h1>Welcome to AI-Powered Learning</h1>
+    <p>An intelligent education platform with study materials, quizzes, analytics & a smart AI tutor.</p>
+
+    <a href="{{ url_for('login') }}" class="btn btn-light cta-btn fw-bold">
+        🔑 Login
+    </a>
+    <a href="{{ url_for('register') }}" class="btn btn-dark cta-btn fw-bold ms-2">
+        📝 Register
+    </a>
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="container features">
+    <div class="row text-center">
+
+        <div class="col-md-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">📘</div>
+                <h5 class="fw-bold">Study Materials</h5>
+                <p>Access PDFs, notes, and videos organized by subjects.</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h5 class="fw-bold">Interactive Quizzes</h5>
+                <p>Subject-wise quizzes with instant scoring & explanations.</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h5 class="fw-bold">AI Tutor</h5>
+                <p>Chat with an AI trained on your materials for smart learning.</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h5 class="fw-bold">Analytics</h5>
+                <p>Track your performance, strengths & improvement areas.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

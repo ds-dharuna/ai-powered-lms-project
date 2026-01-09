@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.upload-container {
+    max-width: 700px;
+    margin: auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    animation: fadeIn 0.4s ease;
+}
+
+.upload-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-control, .form-select {
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.upload-btn {
+    padding: 12px;
+    font-size: 1.15rem;
+    border-radius: 12px;
+}
+
+/* Hide optional fields initially */
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(12px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+</style>
+
+<div class="upload-container">
+
+    <h2 class="upload-title">📚 Upload Study Material</h2>
+
+    {% if msg %}
+    <div class="alert alert-success text-center">{{ msg }}</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- SUBJECT -->
+        <div class="mb-3">
+            <label class="fw-bold">Subject</label>
+            <select name="subject" class="form-select">
+                {% for s in subject_list %}
+                    <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <input name="new_subject"
+                   class="form-control mt-2"
+                   placeholder="Or enter new subject (optional)">
+        </div>
+
+        <!-- TITLE -->
+        <div class="mb-3">
+            <label class="fw-bold">Material Title</label>
+            <input name="title" class="form-control" required>
+        </div>
+
+        <!-- TYPE -->
+        <div class="mb-3">
+            <label class="fw-bold">Material Type</label>
+            <select name="type" id="materialType" class="form-select" onchange="toggleFields()">
+                <option value="pdf">📄 PDF</option>
+                <option value="note">📝 Note</option>
+                <option value="video">🎬 Video Link</option>
+            </select>
+        </div>
+
+        <!-- PDF UPLOAD -->
+        <div id="pdfField" class="mb-3">
+            <label class="fw-bold">Upload PDF</label>
+            <input type="file" name="file" accept="application/pdf" class="form-control">
+        </div>
+
+        <!-- NOTE CONTENT -->
+        <div id="noteField" class="mb-3 hidden">
+            <label class="fw-bold">Enter Note Content</label>
+            <textarea name="content_note" rows="5" class="form-control"></textarea>
+        </div>
+
+        <!-- VIDEO LINK -->
+        <div id="videoField" class="mb-3 hidden">
+            <label class="fw-bold">Paste Video URL (YouTube)</label>
+            <input name="content_video" class="form-control"
+                   placeholder="https://youtube.com/...">
+        </div>
+
+        <button class="btn btn-primary w-100 upload-btn">Upload Material</button>
+    </form>
+</div>
+
+<script>
+function toggleFields() {
+    let type = document.getElementById("materialType").value;
+
+    document.getElementById("pdfField").classList.add("hidden");
+    document.getElementById("noteField").classList.add("hidden");
+    document.getElementById("videoField").classList.add("hidden");
+
+    if (type === "pdf") {
+        document.getElementById("pdfField").classList.remove("hidden");
+    }
+    if (type === "note") {
+        document.getElementById("noteField").classList.remove("hidden");
+    }
+    if (type === "video") {
+        document.getElementById("videoField").classList.remove("hidden");
+    }
+}
+toggleFields();
+</script>
+
+{% endblock %}

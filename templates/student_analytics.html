@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ---------- Cards ---------- */
+.card-box {
+    padding: 22px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    margin-bottom: 28px;
+    transition: 0.25s;
+}
+.card-box:hover {
+    transform: translateY(-3px);
+}
+
+/* ---------- Progress bars ---------- */
+.progress {
+    height: 20px;
+    border-radius: 10px;
+}
+.subject-progress {
+    margin-bottom: 18px;
+}
+
+/* ---------- Title ---------- */
+.analytics-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* ---------- Table ---------- */
+.table thead {
+    background: #222;
+    color: #fff;
+}
+</style>
+
+<h2 class="text-center analytics-title">📊 Your Learning Analytics</h2>
+
+<!-- ========================================= -->
+<!-- OVERALL PERFORMANCE SCORE -->
+<!-- ========================================= -->
+<div class="card-box text-center">
+    <h4 class="mb-2">🌟 Overall Performance Score</h4>
+    <h1 class="fw-bold" style="color:#0d6efd;">{{ performance_score }}%</h1>
+
+    {% if performance_score >= 80 %}
+        <p class="text-success fw-bold">Excellent performance! Keep going 🚀</p>
+    {% elif performance_score >= 50 %}
+        <p class="text-warning fw-bold">Good work! Improve weaker areas.</p>
+    {% else %}
+        <p class="text-danger fw-bold">Needs improvement. Practice more quizzes.</p>
+    {% endif %}
+</div>
+
+<!-- ========================================= -->
+<!-- PERSONALIZED STUDY TIPS -->
+<!-- ========================================= -->
+<div class="card-box">
+    <h4 class="mb-3">🎯 Personalized Study Tips</h4>
+
+    {% for tip in study_tips %}
+        <div class="alert alert-info mb-2">{{ tip }}</div>
+    {% endfor %}
+</div>
+
+<!-- ========================================= -->
+<!-- SMART LEARNING RECOMMENDATIONS -->
+<!-- ========================================= -->
+<div class="card-box">
+    <h4 class="mb-3">📚 Smart Learning Recommendations</h4>
+
+    {% for rec in learning_recommendations %}
+        <div class="alert alert-secondary mb-2">{{ rec }}</div>
+    {% endfor %}
+</div>
+
+{% if subjects|length == 0 %}
+<div class="alert alert-danger text-center">No quiz attempts found.</div>
+{% endif %}
+
+{% if subjects|length > 0 %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ========================================= -->
+<!-- SUBJECT PERFORMANCE BARS -->
+<!-- ========================================= -->
+<div class="card-box">
+    <h4 class="mb-3">📘 Subject Performance</h4>
+
+    {% for i in range(subjects|length) %}
+    <div class="subject-progress">
+        <div class="d-flex justify-content-between">
+            <strong>{{ subjects[i] }}</strong>
+            <span>{{ percentages[i] }}%</span>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar 
+                {% if percentages[i] >= 80 %} bg-success
+                {% elif percentages[i] >= 50 %} bg-warning
+                {% else %} bg-danger {% endif %}"
+                role="progressbar"
+                style="width: {{ percentages[i] }}%;">
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ========================================= -->
+<!-- CHARTS ROW -->
+<!-- ========================================= -->
+<div class="row">
+
+    <!-- LINE CHART -->
+    <div class="col-md-6">
+        <div class="card-box">
+            <h5 class="text-center mb-3">📈 Score Trend</h5>
+            <canvas id="scoreChart"></canvas>
+        </div>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="col-md-6">
+        <div class="card-box">
+            <h5 class="text-center mb-3">📊 Percentage Comparison</h5>
+            <canvas id="percentChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- QUIZ SUMMARY TABLE -->
+<!-- ========================================= -->
+<div class="card-box">
+    <h4 class="mb-3">📝 Quiz Summary</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Score</th>
+                <th>Total</th>
+                <th>Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(subjects|length) %}
+            <tr>
+                <td>{{ subjects[i] }}</td>
+                <td>{{ scores[i] }}</td>
+                <td>{{ totals[i] }}</td>
+                <td>{{ percentages[i] }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ========================================= -->
+<!-- CHART SCRIPT -->
+<!-- ========================================= -->
+<script>
+const subjects = {{ subjects | tojson }};
+const scores = {{ scores | tojson }};
+const percentages = {{ percentages | tojson }};
+
+new Chart(document.getElementById("scoreChart"), {
+    type: "line",
+    data: {
+        labels: subjects,
+        datasets: [{
+            label: "Score",
+            data: scores,
+            borderColor: "#0d6efd",
+            backgroundColor: "rgba(13,110,253,0.2)",
+            borderWidth: 3,
+            pointRadius: 5,
+            tension: 0.3
+        }]
+    }
+});
+
+new Chart(document.getElementById("percentChart"), {
+    type: "bar",
+    data: {
+        labels: subjects,
+        datasets: [{
+            label: "Percentage",
+            data: percentages,
+            backgroundColor: "#6610f2",
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: { y: { beginAtZero: true, max: 100 } }
+    }
+});
+</script>
+
+{% endif %}
+{% endblock %}

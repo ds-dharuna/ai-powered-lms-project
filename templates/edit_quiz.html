@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Edit Quiz Question</h2>
+
+<form method="POST" class="mt-3">
+
+    <label>Subject:</label>
+    <input type="text" name="subject" class="form-control" value="{{ q.subject }}" required>
+
+    <label class="mt-3">Unit:</label>
+<select name="unit" class="form-select" required>
+    <option value="Unit 1" {% if q.unit == "Unit 1" %}selected{% endif %}>Unit 1</option>
+    <option value="Unit 2" {% if q.unit == "Unit 2" %}selected{% endif %}>Unit 2</option>
+    <option value="Unit 3" {% if q.unit == "Unit 3" %}selected{% endif %}>Unit 3</option>
+    <option value="Unit 4" {% if q.unit == "Unit 4" %}selected{% endif %}>Unit 4</option>
+    <option value="Unit 5" {% if q.unit == "Unit 5" %}selected{% endif %}>Unit 5</option>
+</select>
+
+    <label class="mt-3">Question:</label>
+    <textarea name="question" class="form-control" required>{{ q.question }}</textarea>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label>Option A:</label>
+            <input type="text" name="a" class="form-control" value="{{ q.option_a }}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label>Option B:</label>
+            <input type="text" name="b" class="form-control" value="{{ q.option_b }}" required>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label>Option C:</label>
+            <input type="text" name="c" class="form-control" value="{{ q.option_c }}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label>Option D:</label>
+            <input type="text" name="d" class="form-control" value="{{ q.option_d }}" required>
+        </div>
+    </div>
+
+    <label class="mt-3">Correct Answer:</label>
+    <select name="correct" class="form-select" required>
+        <option value="A" {% if q.correct=="A" %}selected{% endif %}>A</option>
+        <option value="B" {% if q.correct=="B" %}selected{% endif %}>B</option>
+        <option value="C" {% if q.correct=="C" %}selected{% endif %}>C</option>
+        <option value="D" {% if q.correct=="D" %}selected{% endif %}>D</option>
+    </select>
+
+    <button class="btn btn-success mt-4 w-100">Save Changes</button>
+</form>
+
+<a href="{{ url_for('manage_quiz') }}" class="btn btn-secondary mt-3">⬅ Back</a>
+
+{% endblock %}

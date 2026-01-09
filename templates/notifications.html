@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">🔔 Notifications</h2>
+
+<a href="{{ url_for('clear_notifications') }}" class="btn btn-danger mb-3">
+    🗑 Clear All Notifications
+</a>
+
+{% if notes|length == 0 %}
+<p>No notifications yet.</p>
+{% endif %}
+
+
+<ul class="list-group">
+  {% for n in notes %}
+  <li class="list-group-item">
+    <strong>{{ n.message }}</strong>
+    <br>
+    <small class="text-muted">{{ n.timestamp.strftime("%Y-%m-%d %H:%M") }}</small>
+  </li>
+  {% endfor %}
+</ul>
+
+
+{% endblock %}

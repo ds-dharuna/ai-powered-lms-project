@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Chat container */
+.chat-window {
+    height: 70vh;
+    background: #f1f4f9;
+    border-radius: 16px;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+/* Message bubbles */
+.msg-bubble {
+    padding: 12px 18px;
+    border-radius: 18px;
+    margin: 10px 0;
+    max-width: 75%;
+    line-height: 1.45;
+    animation: fadeIn 0.3s ease;
+    word-wrap: break-word;
+}
+
+.user-msg {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-msg {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    color: #333;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+/* Typing effect (optional) */
+.typing {
+    animation: blink 1s infinite;
+    opacity: 0.6;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(6px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes blink {
+    0% {opacity: .2;}
+    50% {opacity: 1;}
+    100% {opacity: .2;}
+}
+
+/* Input area */
+.chat-input-box {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input-box input {
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #ccc;
+    box-shadow: none;
+}
+
+.chat-input-box button {
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+}
+</style>
+
+<h2 class="mb-3">🤖 AI Tutor</h2>
+
+<a href="/clear_ai_chat" class="btn btn-danger btn-sm mb-3">Clear Chat</a>
+
+<!-- CHAT WINDOW -->
+<div class="chat-window" id="chatWindow">
+    {% if history|length == 0 %}
+        <p class="text-muted text-center mt-5">
+            👋 Start the conversation by asking a question!
+        </p>
+    {% endif %}
+
+    {% for msg in history %}
+        {% if msg.role == "user" %}
+            <div class="msg-bubble user-msg">{{ msg.content }}</div>
+        {% else %}
+            <div class="msg-bubble ai-msg">{{ msg.content }}</div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- INPUT BAR -->
+<form method="POST" class="chat-input-box">
+    <input name="msg" class="form-control" placeholder="Ask your question..." required>
+    <button class="btn btn-primary">Send ➤</button>
+</form>
+
+<script>
+    let win = document.getElementById("chatWindow");
+    win.scrollTop = win.scrollHeight;
+</script>
+
+{% endblock %}

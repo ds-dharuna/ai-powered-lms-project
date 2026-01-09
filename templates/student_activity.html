@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-3">Activity for {{ student.username }}</h2>
+
+<h4 class="mt-4">✅ Quiz Results</h4>
+<table class="table table-bordered table-striped">
+  <tr class="table-light">
+    <th>Subject</th>
+    <th>Score</th>
+    <th>Total</th>
+    <th>Date & Time</th>
+  </tr>
+  {% for r in quiz_results %}
+  <tr>
+    <td>{{ r.subject }}</td>
+    <td>{{ r.score }}</td>
+    <td>{{ r.total }}</td>
+    <td>{{ r.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h4 class="mt-4">📜 Recent Activities</h4>
+<table class="table table-bordered table-striped">
+  <tr class="table-light">
+    <th>Time</th>
+    <th>Action</th>
+    <th>Details</th>
+    <th>Delete</th>
+  </tr>
+  {% for log in logs %}
+  <tr>
+    <td>{{ log.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+    <td>{{ log.action }}</td>
+    <td>{{ log.details }}</td>
+    <td>
+      <a href="{{ url_for('delete_log', log_id=log.id, uid=student.id) }}" 
+         class="btn btn-sm btn-danger">
+        Delete
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<a href="{{ url_for('monitor_students') }}" class="btn btn-secondary mt-3">⬅ Back</a>
+
+{% endblock %}

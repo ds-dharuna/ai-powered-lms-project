@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.dashboard-title {
+    font-weight: 800;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    padding: 22px;
+    border-radius: 16px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transition: 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-4px); }
+
+.stat-1 { background: linear-gradient(135deg, #007bff, #00a2ff); }
+.stat-2 { background: linear-gradient(135deg, #6f42c1, #b37bff); }
+.stat-3 { background: linear-gradient(135deg, #198754, #2ecc71); }
+
+.section-card {
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    margin-top: 30px;
+}
+
+.table thead {
+    background: #343a40;
+    color: white;
+}
+</style>
+
+<h2 class="dashboard-title text-center">📊 Admin Analytics Dashboard</h2>
+
+<!-- TOP STATISTICS -->
+<div class="row text-center mb-4">
+
+    <div class="col-md-4">
+        <div class="stat-card stat-1">
+            <h3>{{ total_students }}</h3>
+            <p class="mb-0">Students Registered</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card stat-2">
+            <h3>{{ total_materials }}</h3>
+            <p class="mb-0">Study Materials</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card stat-3">
+            <h3>{{ total_quizzes }}</h3>
+            <p class="mb-0">Quiz Subjects</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- SUBJECT PERFORMANCE TABLE -->
+<div class="section-card">
+    <h4 class="mb-3">📘 Subject Performance Summary</h4>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Average Score (%)</th>
+                <th>Total Attempts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject, stats in subject_stats.items() %}
+            <tr>
+                <td>{{ subject }}</td>
+                <td>{{ stats.average }}</td>
+                <td>{{ stats.attempts }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- SINGLE MAIN CHART (CLEAN UI) -->
+<div class="section-card">
+    <h4 class="text-center mb-3">📈 Average Score Per Subject</h4>
+    <canvas id="avgScoreChart" height="120"></canvas>
+</div>
+
+<!-- STUDENT PERFORMANCE TABLE -->
+<div class="section-card">
+    <h4 class="mb-3">👨‍🎓 Student Performance Overview</h4>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Quizzes Attempted</th>
+                <th>Average Score (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in student_stats %}
+            <tr>
+                <td>{{ s.username }}</td>
+                <td>{{ s.attempts }}</td>
+                <td>{{ s.avg_score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- CHART SCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const subjects = {{ subject_stats.keys() | list | tojson }};
+const avgScores = {{ subject_stats.values() | map(attribute='average') | list | tojson }};
+
+// Main Bar Chart
+new Chart(document.getElementById('avgScoreChart'), {
+    type: 'bar',
+    data: {
+        labels: subjects,
+        datasets: [{
+            label: "Average Score (%)",
+            data: avgScores,
+            backgroundColor: "#6f42c1",
+            borderColor: "#4c2c8c",
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: { y: { beginAtZero: true, max: 100 } },
+        plugins: { legend: { display: false } }
+    }
+});
+</script>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">⬅ Back</a>
+</div>
+
+{% endblock %}

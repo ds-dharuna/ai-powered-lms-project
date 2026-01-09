@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Select Subject</h2>
+
+<table class="table table-bordered mt-3">
+    <tr>
+        <th>Subject</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for s in subjects %}
+    <tr>
+        <td>{{ s }}</td>
+        <td>
+            <!-- Unit-wise quiz only (recommended) -->
+            <a href="{{ url_for('quiz_units', subject=s) }}" class="btn btn-primary btn-sm">
+                Unit-wise Quiz
+            </a>
+
+            <!-- If you still want full subject quiz, keep this -->
+            {# 
+            <a href="{{ url_for('take_quiz', subject=s) }}" class="btn btn-success btn-sm">
+                Full Subject Quiz
+            </a>
+            #}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

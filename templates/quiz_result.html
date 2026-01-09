@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Container */
+.result-container {
+    max-width: 750px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    animation: fadeIn 0.5s ease;
+}
+
+/* Score Ring */
+.score-ring {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(#28a745 {{ (score/total)*100 }}%, #dcdcdc {{ (score/total)*100 }}%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #333;
+    margin: auto;
+}
+
+.score-inner {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Table Styling */
+.table-results th {
+    background: #222;
+    color: white;
+}
+.table-results tbody tr:hover {
+    background: #f2f2f2;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+</style>
+
+<div class="result-container">
+
+    <h2 class="text-center mb-4">📝 Quiz Result – {{ subject }}</h2>
+
+    <!-- Score Ring -->
+    <div class="score-ring mb-4">
+        <div class="score-inner">
+            {{ score }}/{{ total }}
+        </div>
+    </div>
+
+    <h5 class="text-center mb-4">
+        {{ ((score/total) * 100) | round(2) }}% Score
+    </h5>
+
+    <hr>
+
+    <h4 class="mt-4 mb-3">📘 Question Review</h4>
+
+    <table class="table table-bordered table-results">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Correct</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in results %}
+            <tr>
+                <td>{{ r.question }}</td>
+
+                {% if r.chosen == r.correct %}
+                    <td class="text-success"><b>{{ r.chosen }}</b></td>
+                {% else %}
+                    <td class="text-danger"><b>{{ r.chosen if r.chosen else '—' }}</b></td>
+                {% endif %}
+
+                <td><b>{{ r.correct }}</b></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('quiz_subjects') }}" class="btn btn-primary">
+            🔁 Take Another Quiz
+        </a>
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary ms-2">
+            🏠 Go to Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

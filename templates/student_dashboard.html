@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* HEADER / WELCOME BANNER */
+.welcome-banner {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+    padding: 40px 30px;
+    border-radius: 18px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.18);
+    margin-bottom: 35px;
+    animation: fadeIn 0.4s ease;
+}
+
+.welcome-banner h2 {
+    font-weight: 800;
+}
+
+.quick-btn {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+/* FEATURE CARDS */
+.feature-card {
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.12);
+    transition: 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.18);
+}
+
+.feature-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+/* MATERIAL LIST CARD */
+.material-card {
+    padding: 15px;
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: 0.3s;
+}
+.material-card:hover {
+    transform: translateY(-5px);
+}
+
+.material-title {
+    font-weight: 600;
+}
+
+.material-type {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<!-- WELCOME BANNER -->
+<div class="welcome-banner">
+    <h2>Hello, {{ current_user().username }} 👋</h2>
+    <p class="mb-3">Welcome back! Continue your learning journey.</p>
+
+    <a href="{{ url_for('ai_tutor') }}" class="btn btn-light quick-btn fw-bold">🤖 AI Tutor</a>
+    <a href="{{ url_for('quiz_subjects') }}" class="btn btn-dark quick-btn fw-bold">📝 Take Quiz</a>
+    <a href="{{ url_for('student_analytics') }}" class="btn btn-warning quick-btn fw-bold">📊 My Analytics</a>
+</div>
+
+<!-- FEATURE CARDS -->
+<h3 class="mb-3">✨ Quick Access</h3>
+<div class="row">
+
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">📘</div>
+            <h5 class="fw-bold">Study Materials</h5>
+            <p>Browse notes, PDFs, and videos at one place.</p>
+            <a href="{{ url_for('materials_list') }}" class="btn btn-primary btn-sm">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h5 class="fw-bold">AI Tutor</h5>
+            <p>Ask anything and get instant smart answers.</p>
+            <a href="{{ url_for('ai_tutor') }}" class="btn btn-success btn-sm">Start Chat</a>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h5 class="fw-bold">Quizzes</h5>
+            <p>Test your understanding with subject-wise quizzes.</p>
+            <a href="{{ url_for('quiz_subjects') }}" class="btn btn-warning btn-sm">Take Quiz</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- MATERIAL LIST -->
+<h3 class="mt-4 mb-3">📚 Available Materials</h3>
+
+{% for m in materials %}
+<div class="material-card">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="material-title">{{ m.title }}</div>
+            <div class="material-type">{{ m.type | upper }} • {{ m.subject }}</div>
+        </div>
+
+        <div>
+            {% if m.type == 'pdf' %}
+                <a href="{{ url_for('serve_pdf', filename=m.filename) }}" 
+                   class="btn btn-sm btn-info">Open PDF</a>
+                <a href="{{ url_for('select_pdf', mid=m.id) }}" 
+                   class="btn btn-sm btn-success">Ask AI</a>
+            {% elif m.type == 'video' %}
+                <a href="{{ url_for('view_video', mid=m.id) }}" 
+                   class="btn btn-sm btn-warning">Play Video</a>
+            {% elif m.type == 'note' %}
+                <a href="{{ url_for('view_note', mid=m.id) }}" 
+                   class="btn btn-sm btn-primary">View Note</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

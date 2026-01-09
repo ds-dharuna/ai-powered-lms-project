@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Popup Chatbox */
+.chat-popup {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 25px;
+    width: 330px;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 9999;
+}
+
+.chat-messages {
+    height: 260px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+
+.user-msg { background: #d1e7ff; padding:6px; margin:5px; border-radius:6px; }
+.ai-msg   { background: #e6ffe6; padding:6px; margin:5px; border-radius:6px; }
+</style>
+
+<h3>{{ material.title }}</h3>
+
+<!-- VIDEO PLAYER -->
+<iframe width="700" height="400" 
+        src="{{ embed_url }}" 
+        frameborder="0" 
+        allowfullscreen>
+</iframe>
+
+<br><br>
+
+<!-- Ask Doubt Button -->
+<button class="btn btn-primary" onclick="openChat()">⚡ Ask Doubt About This Video</button>
+
+<!-- POPUP CHAT -->
+<div id="chatPopup" class="chat-popup">
+
+    <h5>AI Video Assistant</h5>
+    <button class="btn btn-sm btn-danger float-end" onclick="closeChat()">X</button>
+
+    <div class="chat-messages" id="chatBox">
+        {% for msg in history %}
+            {% if msg.role == "user" %}
+                <div class="user-msg">{{ msg.content }}</div>
+            {% else %}
+                <div class="ai-msg">{{ msg.content }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <form method="POST" class="mt-2">
+        <input name="msg" class="form-control" placeholder="Ask your doubt..." required>
+        <button class="btn btn-success w-100 mt-2">Send</button>
+    </form>
+</div>
+
+<script>
+function openChat() {
+    document.getElementById("chatPopup").style.display = "block";
+}
+function closeChat() {
+    document.getElementById("chatPopup").style.display = "none";
+}
+</script>
+
+{% endblock %}

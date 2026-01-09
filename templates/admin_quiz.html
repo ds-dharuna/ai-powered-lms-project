@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.quiz-form-container {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    animation: fadeIn 0.4s ease;
+}
+
+.quiz-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-control, .form-select {
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.add-btn {
+    padding: 12px;
+    font-size: 1.15rem;
+    border-radius: 12px;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+</style>
+
+<div class="quiz-form-container">
+
+    <h2 class="quiz-title">📝 Add Quiz Question</h2>
+
+    {% if msg %}
+    <div class="alert alert-success text-center">{{ msg }}</div>
+    {% endif %}
+
+    <form method="POST">
+
+        <!-- SUBJECT -->
+        <div class="mb-3">
+            <label class="fw-bold">Subject</label>
+            <select name="subject" class="form-select" required>
+                {% for s in subject_list %}
+                    <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+    <label>Unit</label>
+    <select name="unit" class="form-control">
+        <option value="Unit 1">Unit 1</option>
+        <option value="Unit 2">Unit 2</option>
+        <option value="Unit 3">Unit 3</option>
+        <option value="Unit 4">Unit 4</option>
+        <option value="Unit 5">Unit 5</option>
+    </select>
+</div>
+
+
+        <!-- QUESTION -->
+        <div class="mb-3">
+            <label class="fw-bold">Question</label>
+            <textarea name="question" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <!-- OPTIONS -->
+        <div class="mb-3">
+            <label class="fw-bold">Option A</label>
+            <input name="a" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Option B</label>
+            <input name="b" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Option C</label>
+            <input name="c" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Option D</label>
+            <input name="d" class="form-control" required>
+        </div>
+
+        <!-- CORRECT ANSWER -->
+        <div class="mb-3">
+            <label class="fw-bold">Correct Answer</label>
+            <select name="correct" class="form-select" required>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+
+        <!-- SUBMIT -->
+        <button class="btn btn-primary w-100 add-btn">
+            ➕ Add Question
+        </button>
+
+    </form>
+    <a href="/admin/quiz/manage" class="btn btn-secondary mt-3">Manage Questions</a>
+</div>
+
+{% endblock %}

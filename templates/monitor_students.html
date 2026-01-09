@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.monitor-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+/* Highlight cards */
+.monitor-card {
+    padding: 18px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.monitor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+}
+
+.activity-badge {
+    padding: 6px 12px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.quiz-badge {
+    padding: 6px 12px;
+    background: #198754;
+    color: white;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.last-activity {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.table thead {
+    background: #343a40;
+    color: white;
+}
+
+.detail-btn {
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+
+</style>
+
+<h2 class="monitor-title text-center">👀 Student Monitoring Dashboard</h2>
+
+
+
+<!-- Detailed Student Activity Table -->
+<div class="monitor-card">
+    <h4 class="mb-3">📘 Student Activity Overview</h4>
+
+    <table class="table table-bordered table-hover shadow-sm">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Total Activities</th>
+          <th>Quizzes Attempted</th>
+          <th>Last Activity</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for s in overview %}
+        <tr>
+          <td><b>{{ s.username }}</b></td>
+
+          <td>
+            <span class="activity-badge">{{ s.total_activities }}</span>
+          </td>
+
+          <td>
+            <span class="quiz-badge">{{ s.total_quizzes }}</span>
+          </td>
+
+          <td class="last-activity">{{ s.last_activity }}</td>
+
+          <td>
+            <a href="{{ url_for('student_activity', uid=s.id) }}" 
+               class="btn btn-primary btn-sm detail-btn">
+               📄 View Activity
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        ⬅ Back to Admin Dashboard
+    </a>
+</div>
+
+{% endblock %}

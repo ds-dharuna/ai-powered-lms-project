@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.page-title {
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* CARD GRID */
+.material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 20px;
+}
+
+/* CARD STYLE */
+.material-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: 0.25s ease;
+}
+
+.material-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+/* ICON */
+.material-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+/* ACTION BUTTONS */
+.action-btn {
+    margin-right: 6px;
+    margin-top: 10px;
+}
+</style>
+
+<h2 class="page-title">📚 Study Materials</h2>
+
+<!-- SUBJECT FILTER -->
+{% if subject_list %}
+<form method="GET" class="mb-4">
+    <label class="fw-bold me-2">Filter by Subject:</label>
+    <select name="subject" class="form-select w-auto d-inline">
+        <option value="">All</option>
+        {% for s in subject_list %}
+            <option value="{{ s }}" 
+                    {% if request.args.get('subject') == s %} selected {% endif %}>
+                {{ s }}
+            </option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-dark btn-sm">Apply</button>
+</form>
+{% endif %}
+
+<!-- MATERIAL GRID -->
+<div class="material-grid">
+
+    {% for m in materials %}
+    <div class="material-card">
+
+        <!-- ICON BASED ON TYPE -->
+        {% if m.type == 'pdf' %}
+            <div class="material-icon text-danger">📄</div>
+        {% elif m.type == 'video' %}
+            <div class="material-icon text-warning">🎬</div>
+        {% elif m.type == 'note' %}
+            <div class="material-icon text-success">📝</div>
+        {% endif %}
+
+        <h5 class="fw-bold">{{ m.title }}</h5>
+        <p class="text-muted mb-1"><b>Subject:</b> {{ m.subject }}</p>
+        <p class="text-muted"><b>Type:</b> {{ m.type | capitalize }}</p>
+
+        <!-- ACTIONS -->
+        {% if role == "student" %}
+            {% if m.type == 'pdf' %}
+                <a href="{{ url_for('serve_pdf', filename=m.filename) }}" 
+                   target="_blank"
+                   class="btn btn-primary btn-sm action-btn">Open PDF</a>
+
+                <a href="{{ url_for('select_pdf', mid=m.id) }}" 
+                   class="btn btn-success btn-sm action-btn">AI Tutor</a>
+
+            {% elif m.type == 'video' %}
+                <a href="{{ url_for('view_video', mid=m.id) }}" 
+                    class="btn btn-warning btn-sm action-btn">Watch</a>
+
+            {% elif m.type == 'note' %}
+                <a href="{{ url_for('view_note', mid=m.id) }}" 
+                   class="btn btn-secondary btn-sm action-btn">View Note</a>
+            {% endif %}
+        {% endif %}
+
+        {% if role == "admin" %}
+            <a href="{{ url_for('delete_material', mid=m.id) }}"
+               class="btn btn-danger btn-sm action-btn">Delete</a>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

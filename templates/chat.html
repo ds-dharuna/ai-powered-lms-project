@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* CHAT WINDOW */
+.chat-window {
+    height: 70vh;
+    background: #f1f4f9;
+    border-radius: 16px;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+/* MESSAGE BUBBLES */
+.msg-bubble {
+    padding: 12px 18px;
+    border-radius: 18px;
+    margin: 10px 0;
+    max-width: 75%;
+    line-height: 1.45;
+    animation: fadeIn 0.3s ease;
+    word-wrap: break-word;
+}
+
+.user-msg {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-msg {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    color: #333;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+/* SMALL ANIMATION */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(6px);}
+    to   {opacity: 1; transform: translateY(0);}
+}
+
+/* INPUT STYLE */
+.chat-input-box {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-box input {
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.chat-input-box button {
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+}
+</style>
+
+<!-- CHAT HEADER -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h2>
+        AI Tutor – PDF Chat
+        <span class="badge bg-primary ms-2">{{ lang }}</span>
+    </h2>
+
+    <a href="/clear_pdf_chat" class="btn btn-danger btn-sm">
+        Clear Chat
+    </a>
+</div>
+
+<!-- SELECTED LANGUAGE INFO -->
+<div class="alert alert-info py-2 mb-3">
+    🌐 <strong>Selected Language:</strong> {{ lang }}
+</div>
+
+
+<!-- TOP PANEL -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    {% if pdf %}
+        <div class="alert alert-info py-2 px-3 mb-0">
+            <strong>Selected PDF:</strong> {{ pdf }}
+        </div>
+    {% else %}
+        <div class="alert alert-danger py-2 px-3 mb-0">
+            <strong>No PDF selected.</strong> Please go back to materials.
+        </div>
+    {% endif %}
+
+    
+</div>
+
+<!-- LANGUAGE SELECTOR -->
+<form method="GET" action="{{ url_for('chat_with_pdf') }}" class="mb-2">
+  <select name="lang" class="form-select w-auto d-inline">
+    <option value="English" {% if lang=="English" %}selected{% endif %}>English</option>
+    <option value="Tamil" {% if lang=="Tamil" %}selected{% endif %}>Tamil</option>
+    <option value="Kannada" {% if lang=="Kannada" %}selected{% endif %}>Kannada</option>
+    <option value="Hindi" {% if lang=="Hindi" %}selected{% endif %}>Hindi</option>
+    <option value="Telugu" {% if lang=="Telugu" %}selected{% endif %}>Telugu</option>
+  </select>
+  <button class="btn btn-secondary btn-sm ms-2">Change</button>
+</form>
+
+<!-- CHAT WINDOW -->
+<div class="chat-window" id="chatWindow">
+    {% if history|length == 0 %}
+        <p class="text-muted text-center mt-5">
+            📘 Ask a question based on this PDF to begin the conversation.
+        </p>
+    {% endif %}
+
+    {% for msg in history %}
+        {% if msg.role == "user" %}
+            <div class="msg-bubble user-msg">{{ msg.content }}</div>
+        {% else %}
+            <div class="msg-bubble ai-msg">{{ msg.content }}</div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- INPUT BAR -->
+<form method="POST" class="chat-input-box">
+    <input name="msg" class="form-control" placeholder="Ask something from the PDF..." required>
+    <button class="btn btn-primary">Send ➤</button>
+</form>
+
+<script>
+    let win = document.getElementById("chatWindow");
+    win.scrollTop = win.scrollHeight;
+</script>
+
+{% endblock %}
